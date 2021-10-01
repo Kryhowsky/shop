@@ -30,4 +30,14 @@ public class ProductController {
     public Page<ProductDto> getProductPage(@RequestParam int page,@RequestParam int size) {
         return productService.getPage(PageRequest.of(page, size)).map(productMapper::toDto);
     }
+
+    @PutMapping("/{id}")
+    public ProductDto updateProduct(@RequestBody ProductDto product, @PathVariable Long id) {
+        return productMapper.toDto(productService.update(productMapper.toDao(product), id));
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteProductById(@PathVariable Long id) {
+        productService.delete(id);
+    }
 }

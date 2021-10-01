@@ -7,16 +7,16 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@Data //gettery, settery, equals, hashCode, toString dla wszystkich pól w obiekcie + wieloargumentowy konstruktor dla finalnych zmiennych
+@Data
 @Entity
 @Builder
 @NoArgsConstructor
-@AllArgsConstructor // wszystkie pola
+@AllArgsConstructor
 @Table(indexes = @Index(columnList = "email", unique = true))
-public class User { // obiekty używane do komunikacji z warstwą danych i klientem; Data Access Object
+public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // identity - autoincrement dla pola
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(unique = true)

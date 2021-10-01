@@ -16,7 +16,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public User save(User user) { //  jeśli id jest ustawione to robi select i jeśli taki obiekt jest w bazie to go aktualizuje
+    public User save(User user) {
         return userRepository.save(user);
     }
 
@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void delete(Long id) { // zwraca wyjątek jeśli nie ma takiego obiektu w bazie
+    public void delete(Long id) {
         userRepository.deleteById(id);
     }
 
@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUserById(Long id) { // zwraca EntityNotFoundException
+    public User getUserById(Long id) {
         return userRepository.getById(id);
     }
 }

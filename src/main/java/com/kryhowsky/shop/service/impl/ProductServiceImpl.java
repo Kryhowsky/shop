@@ -21,7 +21,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Transactional // przeczytać!!
+    @Transactional
     public Product update(Product product, Long id) {
 
         Product productDb = getProductById(id);
