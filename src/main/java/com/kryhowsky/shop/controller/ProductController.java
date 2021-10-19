@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/api/products")
 @RequiredArgsConstructor
@@ -17,7 +19,7 @@ public class ProductController {
     private final ProductService productService;
 
     @PostMapping
-    public ProductDto saveProduct(@RequestBody ProductDto product) { // klient komunikuje się za pomocą DTO
+    public ProductDto saveProduct(@RequestBody @Valid ProductDto product) {
         return productMapper.toDto(productService.save(productMapper.toDao(product)));
     }
 
@@ -32,7 +34,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public ProductDto updateProduct(@RequestBody ProductDto product, @PathVariable Long id) {
+    public ProductDto updateProduct(@RequestBody @Valid ProductDto product, @PathVariable Long id) {
         return productMapper.toDto(productService.update(productMapper.toDao(product), id));
     }
 

@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+@Validated
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
-@Validated
 public class UserController { // warstwa do komunikacji z klientem
 
     private final UserMapper userMapper;

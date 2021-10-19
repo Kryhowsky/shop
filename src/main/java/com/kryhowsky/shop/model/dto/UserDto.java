@@ -26,8 +26,8 @@ public class UserDto {
     @NotBlank
     private String email;
 
-    @NotBlank
-    @Length(min = 5)
+    @NotBlank(groups = Create.class)
+    @Length(min = 5, groups = Create.class)
     private String password;
 
     private String confirmPassword;
@@ -37,4 +37,6 @@ public class UserDto {
 
     @NotBlank
     private String lastName;
+
+    private Integer revisionNumber;
 }
