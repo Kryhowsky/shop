@@ -45,20 +45,21 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                     .getBody();
 
 
-        String email = claims.getSubject();
-        String roles = claims.get("authorities", String.class);
+            String email = claims.getSubject();
+            String roles = claims.get("authorities", String.class);
 
-        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        if (roles != null && !roles.isEmpty()) {
-            grantedAuthorities = Arrays.stream(roles.split(","))
-                    .map(SimpleGrantedAuthority::new)
-                    .collect(Collectors.toList());
-        }
+            List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+            if (roles != null && !roles.isEmpty()) {
+                grantedAuthorities = Arrays.stream(roles.split(","))
+                        .map(SimpleGrantedAuthority::new)
+                        .collect(Collectors.toList());
+            }
 
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(email, null, grantedAuthorities);
-        SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-        chain.doFilter(request, response);
+            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(email, null, grantedAuthorities);
+            SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+            chain.doFilter(request, response);
         } catch (ExpiredJwtException exception) {
+            response.setStatus(401);
             log.warn("Token expired");
         }
 

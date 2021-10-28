@@ -7,6 +7,7 @@ import com.kryhowsky.shop.validator.group.Create;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,11 +29,13 @@ public class UserController { // warstwa do komunikacji z klientem
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("isAuthenticated() && (hasRole('ADMIN') || @securityService.hasAccessToUser(#id))")
     public UserDto getUserById(@PathVariable Long id) {
         return userMapper.toDto(userService.getUserById(id));
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public Page<UserDto> getUserPage(@RequestParam int page, @RequestParam int size) {
         return userService.getPage(PageRequest.of(page, size)).map(userMapper::toDto);
     }
@@ -43,6 +46,7 @@ public class UserController { // warstwa do komunikacji z klientem
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteUserById(@PathVariable Long id) {
         userService.delete(id);
     }
