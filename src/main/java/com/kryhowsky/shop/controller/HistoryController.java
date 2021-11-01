@@ -8,6 +8,7 @@ import com.kryhowsky.shop.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,11 +21,13 @@ public class HistoryController {
     private final HistoryMapper historyMapper;
 
     @GetMapping("/users/{userId}")
+    @PreAuthorize("isAuthenticated() && (hasRole('ADMIN') || @securityService.hasAccessToUser(#id))")
     public Page<UserDto> getUserHistory(@PathVariable Long userId, @RequestParam int page, @RequestParam int size) {
         return userRepository.findRevisions(userId, PageRequest.of(page, size)).map(historyMapper::toUserDto);
     }
 
     @GetMapping("/products/{productId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public Page<ProductDto> getProductHistory(@PathVariable Long productId, @RequestParam int page, @RequestParam int size) {
         return productRepository.findRevisions(productId, PageRequest.of(page, size)).map(historyMapper::toProductDto);
     }
