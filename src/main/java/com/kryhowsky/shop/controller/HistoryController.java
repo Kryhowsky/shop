@@ -21,7 +21,7 @@ public class HistoryController {
     private final HistoryMapper historyMapper;
 
     @GetMapping("/users/{userId}")
-    @PreAuthorize("isAuthenticated() && (hasRole('ADMIN') || @securityService.hasAccessToUser(#id))")
+    @PreAuthorize("isAuthenticated() && (hasRole('ADMIN') || @securityService.hasAccessToUser(#userId))")
     public Page<UserDto> getUserHistory(@PathVariable Long userId, @RequestParam int page, @RequestParam int size) {
         return userRepository.findRevisions(userId, PageRequest.of(page, size)).map(historyMapper::toUserDto);
     }

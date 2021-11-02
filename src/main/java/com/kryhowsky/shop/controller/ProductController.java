@@ -26,13 +26,11 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("isAuthenticated()")
     public ProductDto getProductById(@PathVariable Long id) {
         return productMapper.toDto(productService.getProductById(id));
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public Page<ProductDto> getProductPage(@RequestParam int page,@RequestParam int size) {
         return productService.getPage(PageRequest.of(page, size)).map(productMapper::toDto);
     }
