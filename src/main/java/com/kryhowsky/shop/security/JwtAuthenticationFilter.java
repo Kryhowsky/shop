@@ -2,7 +2,6 @@ package com.kryhowsky.shop.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kryhowsky.shop.model.dto.LoginDto;
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.DefaultClaims;
@@ -42,8 +41,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         }
 
         try {
-            LoginDto loginDto = objectMapper.readValue(request.getInputStream(), LoginDto.class);
-            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword());
+            var loginDto = objectMapper.readValue(request.getInputStream(), LoginDto.class);
+            var usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword());
             return getAuthenticationManager().authenticate(usernamePasswordAuthenticationToken);
         } catch (IOException e) {
             throw new AuthenticationServiceException(e.getMessage());
@@ -52,14 +51,14 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-        Claims claims = new DefaultClaims()
+        var claims = new DefaultClaims()
                 .setSubject(authResult.getName())
                 .setExpiration(new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000));
         claims.put("authorities", authResult.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(",")));
 
-        String token = Jwts.builder()
+        var token = Jwts.builder()
                 .setClaims(claims)
                 .signWith(SignatureAlgorithm.HS512, "akdsbgkasdbixzvzov345hkjefbgmvx")
                 .compact();

@@ -24,7 +24,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public Product update(Product product, Long id) {
 
-        Product productDb = getProductById(id);
+        var productDb = getProductById(id);
         productDb.setBrand(product.getBrand());
         productDb.setName(product.getName());
         productDb.setDescription(product.getDescription());

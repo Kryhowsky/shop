@@ -12,7 +12,7 @@ public class FieldErrorMapperImpl implements FieldErrorMapper {
     @Override
     public FieldErrorDto toDto(ObjectError objectError) {
 
-        FieldError fieldError = (FieldError) objectError;
+        var fieldError = (FieldError) objectError;
 
         return new FieldErrorDto(fieldError.getDefaultMessage(), fieldError.getField());
     }
