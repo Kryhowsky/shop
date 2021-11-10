@@ -4,11 +4,13 @@ import com.kryhowsky.shop.model.dao.Product;
 import com.kryhowsky.shop.repository.ProductRepository;
 import com.kryhowsky.shop.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
@@ -46,6 +48,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product getProductById(Long id) {
+        log.info("Product id {} not in cache", id);
         return productRepository.getById(id);
     }
 }
