@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,6 +25,10 @@ public class BasketServiceImpl implements BasketService {
     public Basket addProduct(Long productId, Integer productQuantity) {// sprawdzanie dostępności ilości produktów
         var currentUser = userService.getCurrentUser();
         var product = productService.getProductById(productId);
+
+        if (product.getQuantity() < productQuantity) {
+            throw new IllegalArgumentException("Wrong product quantity.");
+        }
 
         var basket = new Basket();
         basket.setUser(currentUser);
@@ -45,11 +48,11 @@ public class BasketServiceImpl implements BasketService {
 
     @Override
     @Transactional
-    public void updateProductQuantity(Long productId, Integer productQuantity) {// dodanie do koszyka jeśli produktu nie ma w koszyku
+    public void updateProductQuantity(Long productId, Integer productQuantity) {
 
         var currentUser = userService.getCurrentUser();
         var basketToUpdate = basketRepository.findByUserIdAndProductId(currentUser.getId(), productId)
-                .orElseThrow(() -> new EntityNotFoundException("Entity not found"));
+                .orElse(addProduct(productId, productQuantity));
 
         if (productService.getProductById(productId).getQuantity() >= basketToUpdate.getQuantity() + productQuantity) {
             basketToUpdate.setQuantity(basketToUpdate.getQuantity() + productQuantity);
