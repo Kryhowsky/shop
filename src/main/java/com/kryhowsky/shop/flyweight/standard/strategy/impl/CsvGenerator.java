@@ -1,4 +1,4 @@
-package com.kryhowsky.shop.flyweight.standard.strategy.Impl;
+package com.kryhowsky.shop.flyweight.standard.strategy.impl;
 
 import com.kryhowsky.shop.flyweight.model.FileType;
 import com.kryhowsky.shop.flyweight.standard.strategy.GeneratorStrategy;

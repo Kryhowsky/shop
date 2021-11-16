@@ -1,4 +1,4 @@
-package com.kryhowsky.shop.validator.Impl;
+package com.kryhowsky.shop.validator.impl;
 
 import com.kryhowsky.shop.model.dto.UserDto;
 import com.kryhowsky.shop.validator.PasswordValid;

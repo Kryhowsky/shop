@@ -1,6 +1,6 @@
 package com.kryhowsky.shop.validator;
 
-import com.kryhowsky.shop.validator.Impl.PasswordValidator;
+import com.kryhowsky.shop.validator.impl.PasswordValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
