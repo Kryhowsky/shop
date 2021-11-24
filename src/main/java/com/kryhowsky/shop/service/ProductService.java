@@ -6,11 +6,12 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface ProductService {
 
     @CachePut(cacheNames = "products", key = "#result.id", unless = "#result.quantity <= 0")
-    Product save(Product product);
+    Product save(Product product, MultipartFile image);
 
     @CachePut(cacheNames = "products", key = "#id", unless = "#result.quantity <= 0")
     Product update(Product product, Long id);

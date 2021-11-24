@@ -16,6 +16,7 @@ import javax.validation.constraints.NotBlank;
 public class ProductDto {
 
     private Long id;
+    private String imagePath;
 
     @NotBlank
     private String brand;

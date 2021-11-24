@@ -16,6 +16,6 @@ public class RegistrationEmailSender implements EmailSenderStrategy {
 
     @Override
     public void generateEmail() {
-        log.info("Generating Registration Email...");
+        log.info("Sending Registration Email...");
     }
 }

@@ -36,6 +36,7 @@ public class Product implements IdentifiedDataSerializable {
     private String description;
     private Double price;
     private Integer quantity;
+    private String imagePath;
 
     @CreatedDate
     private LocalDateTime createdDate;

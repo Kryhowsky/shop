@@ -16,6 +16,6 @@ public class WelcomeEmailSender implements EmailSenderStrategy {
 
     @Override
     public void generateEmail() {
-        log.info("Generating Welcome Email...");
+        log.info("Sending Welcome Email...");
     }
 }
