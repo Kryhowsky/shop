@@ -14,7 +14,7 @@ public interface ProductService {
     Product save(Product product, MultipartFile image);
 
     @CachePut(cacheNames = "products", key = "#id", unless = "#result.quantity <= 0")
-    Product update(Product product, Long id);
+    Product update(Product product, MultipartFile image, Long id);
 
     @CacheEvict(cacheNames = "products", key = "#id")
     void delete(Long id);

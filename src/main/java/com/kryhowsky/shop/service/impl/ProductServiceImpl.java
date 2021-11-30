@@ -7,15 +7,14 @@ import com.kryhowsky.shop.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 
 @Slf4j
 @Service
@@ -29,16 +28,16 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product save(Product product, MultipartFile image) {
         productRepository.save(product);
-        String[] splittedFileName = image.getOriginalFilename().split("\\.");
-        Path path = Paths.get(filePropertiesConfig.getProduct(), "product_" + product.getId() + "." + splittedFileName[splittedFileName.length - 1]);
+        Path path = Paths.get(filePropertiesConfig.getProduct(), "product_" + product.getId() + "." + FilenameUtils.getExtension(image.getOriginalFilename()));
         Files.copy(image.getInputStream(), path);
         product.setImagePath(path.toString());
         return productRepository.save(product);
     }
 
+    @SneakyThrows
     @Override
     @Transactional
-    public Product update(Product product, Long id) {
+    public Product update(Product product, MultipartFile image, Long id) {
 
         var productDb = getProductById(id);
         productDb.setBrand(product.getBrand());
@@ -46,6 +45,12 @@ public class ProductServiceImpl implements ProductService {
         productDb.setDescription(product.getDescription());
         productDb.setPrice(product.getPrice());
         productDb.setQuantity(product.getQuantity());
+
+        if (image != null) {
+            Path path = Paths.get(filePropertiesConfig.getProduct(), "product_" + productDb.getId() + "." + FilenameUtils.getExtension(image.getOriginalFilename())); // TODO: przed zapisem pliku usunąć poprzedni
+            Files.copy(image.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+            productDb.setImagePath(path.toString());
+        }
 
         return productDb;
     }
