@@ -44,4 +44,28 @@ class ProductMapperImplSpec extends Specification {
 
     }
 
+    def 'should return null toDto'() {
+        given:
+        def nullProduct = null
+
+        when:
+        def result = productMapper.toDto(nullProduct)
+
+        then:
+        result == null
+
+    }
+
+    def 'should return null toDao'() {
+        given:
+        def nullProduct = null
+
+        when:
+        def result = productMapper.toDao(nullProduct)
+
+        then:
+        result == null
+
+    }
+
 }

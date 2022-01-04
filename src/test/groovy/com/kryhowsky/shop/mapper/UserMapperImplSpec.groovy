@@ -29,7 +29,7 @@ class UserMapperImplSpec extends Specification {
         def userDto = new UserDto(id: 1, email: "email@email.com", password: "Password", firstName: "Jan", lastName: "Kowalski")
 
         when:
-        def result = userMapper.toDao(userDto);
+        def result = userMapper.toDao(userDto)
 
         then:
         result.id == userDto.id
@@ -37,6 +37,30 @@ class UserMapperImplSpec extends Specification {
         result.password == userDto.password
         result.firstName == userDto.firstName
         result.lastName == userDto.lastName
+
+    }
+
+    def 'should return null in toDto'() {
+        given:
+        def nullUser = null
+
+        when:
+        def result = userMapper.toDto(nullUser)
+
+        then:
+        result == null
+
+    }
+
+    def 'should return null in toDao'() {
+        given:
+        def nullUser = null
+
+        when:
+        def result = userMapper.toDao(nullUser)
+
+        then:
+        result == null;
 
     }
 

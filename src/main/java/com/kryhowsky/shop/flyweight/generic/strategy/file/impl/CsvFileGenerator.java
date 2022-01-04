@@ -4,7 +4,6 @@ import com.kryhowsky.shop.flyweight.generic.strategy.file.FileGeneratorStrategy;
 import com.kryhowsky.shop.flyweight.model.FileType;
 import com.kryhowsky.shop.repository.ProductRepository;
 import com.opencsv.CSVWriter;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -13,10 +12,7 @@ import java.nio.charset.StandardCharsets;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
-public class CsvFileGenerator implements FileGeneratorStrategy {
-
-    private final ProductRepository productRepository;
+public record CsvFileGenerator (ProductRepository productRepository) implements FileGeneratorStrategy {
 
     @Override
     public FileType getType() {

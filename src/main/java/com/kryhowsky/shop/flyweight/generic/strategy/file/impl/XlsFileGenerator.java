@@ -33,8 +33,7 @@ public class XlsFileGenerator implements FileGeneratorStrategy {
     public byte[] generateFile() {
         log.info("Generating XLS file using Generic Strategy..");
 
-        try {
-            Workbook workbook = WorkbookFactory.create(false);
+        try (Workbook workbook = WorkbookFactory.create(false)) {
             Sheet sheet = workbook.createSheet();
             Row row = sheet.createRow(0);
             row.createCell(0).setCellValue("Id");

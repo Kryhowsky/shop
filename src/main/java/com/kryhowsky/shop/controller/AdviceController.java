@@ -4,7 +4,9 @@ import com.kryhowsky.shop.mapper.FieldErrorMapper;
 import com.kryhowsky.shop.model.dto.FieldErrorDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -13,7 +15,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolationException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestControllerAdvice
@@ -38,14 +39,34 @@ public class AdviceController {
 
         return methodArgumentNotValidException.getBindingResult().getAllErrors().stream()
                 .map(fieldErrorMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
 
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ConstraintViolationException.class)
-    public void handleConstraintViolationException(ConstraintViolationException constraintViolationException) {
+    public List<FieldErrorDto> handleConstraintViolationException(ConstraintViolationException constraintViolationException) {
 
         log.warn("Password and Confirm Password must be the same", constraintViolationException);
+
+        return constraintViolationException.getConstraintViolations().stream()
+                .map(constraintViolation -> new FieldErrorDto(constraintViolation.getMessage(), constraintViolation.getPropertyPath().toString()))
+                .toList();
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public void handleDataIntegrityViolationException(DataIntegrityViolationException dataIntegrityViolationException) {
+
+        log.warn("Duplicated entry", dataIntegrityViolationException);
+
+    }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(AuthenticationServiceException.class)
+    public void handleAuthenticationServiceException(AuthenticationServiceException authenticationServiceException) {
+
+        log.warn("Login error", authenticationServiceException);
+
     }
 }

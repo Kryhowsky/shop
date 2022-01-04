@@ -1,6 +1,7 @@
 package com.kryhowsky.shop.service.impl;
 
 import com.kryhowsky.shop.config.properties.FilePropertiesConfig;
+import com.kryhowsky.shop.helper.FileHelper;
 import com.kryhowsky.shop.model.dao.Product;
 import com.kryhowsky.shop.repository.ProductRepository;
 import com.kryhowsky.shop.service.ProductService;
@@ -23,13 +24,15 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final FilePropertiesConfig filePropertiesConfig;
+    private final FileHelper fileHelper;
 
     @SneakyThrows
     @Override
     public Product save(Product product, MultipartFile image) {
         productRepository.save(product);
         Path path = Paths.get(filePropertiesConfig.getProduct(), "product_" + product.getId() + "." + FilenameUtils.getExtension(image.getOriginalFilename()));
-        Files.copy(image.getInputStream(), path);
+//        Files.copy(image.getInputStream(), path);
+        fileHelper.copyInputStream().accept(image.getInputStream(), path);
         product.setImagePath(path.toString());
         return productRepository.save(product);
     }
@@ -46,8 +49,12 @@ public class ProductServiceImpl implements ProductService {
         productDb.setPrice(product.getPrice());
         productDb.setQuantity(product.getQuantity());
 
+        if (productDb.getImagePath() != null) {
+            Files.delete(Path.of(productDb.getImagePath()));
+        }
+
         if (image != null) {
-            Path path = Paths.get(filePropertiesConfig.getProduct(), "product_" + productDb.getId() + "." + FilenameUtils.getExtension(image.getOriginalFilename())); // TODO: przed zapisem pliku usunąć poprzedni
+            Path path = Paths.get(filePropertiesConfig.getProduct(), "product_" + productDb.getId() + "." + FilenameUtils.getExtension(image.getOriginalFilename()));
             Files.copy(image.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
             productDb.setImagePath(path.toString());
         }

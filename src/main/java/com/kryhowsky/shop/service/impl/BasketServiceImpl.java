@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -52,9 +51,11 @@ public class BasketServiceImpl implements BasketService {
 
         var currentUser = userService.getCurrentUser();
         var basketToUpdate = basketRepository.findByUserIdAndProductId(currentUser.getId(), productId)
-                .orElse(addProduct(productId, productQuantity));
+                .orElseGet(() -> addProduct(productId, productQuantity));
 
-        if (productService.getProductById(productId).getQuantity() >= basketToUpdate.getQuantity() + productQuantity) {
+        var product = productService.getProductById(productId);
+
+        if (product.getQuantity() > basketToUpdate.getQuantity() + productQuantity) {
             basketToUpdate.setQuantity(basketToUpdate.getQuantity() + productQuantity);
         }
     }
@@ -69,7 +70,7 @@ public class BasketServiceImpl implements BasketService {
                     product.setQuantity(basket.getQuantity());
                     return product;
                 })
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
