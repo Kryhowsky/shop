@@ -16,7 +16,7 @@ import java.util.Set;
 @Audited
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(indexes = @Index(columnList = "email", unique = true))
+@Table(indexes = @Index(name = "idx_email", columnList = "email", unique = true))
 public class User extends Auditable {
 
     @Id

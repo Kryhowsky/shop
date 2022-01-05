@@ -9,12 +9,12 @@ import org.mapstruct.MappingTarget;
 public interface AuditableMapper<T extends Auditable, U extends AuditableDto> {
 
     @AfterMapping
-    default void mapAuditToDto(T auditable, @MappingTarget U auditableDto) {
+    default void mapAuditToDto(T auditable, @MappingTarget U.AuditableDtoBuilder<?, ?> auditableDto) {
         if (!SecurityUtils.hasRole("ROLE_ADMIN")) {
-            auditableDto.setCreatedBy(null);
-            auditableDto.setCreatedDate(null);
-            auditableDto.setLastModifiedBy(null);
-            auditableDto.setLastModifiedDate(null);
+            auditableDto.createdBy(null);
+            auditableDto.createdDate(null);
+            auditableDto.lastModifiedBy(null);
+            auditableDto.lastModifiedDate(null);
         }
     }
 }
