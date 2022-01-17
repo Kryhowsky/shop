@@ -33,7 +33,7 @@ public class UserController { // warstwa do komunikacji z klientem
 
     @GetMapping("/{id}")
     @Operation(description = "Returns user by given ID", security = @SecurityRequirement(name = "bearer-key"))
-    @PreAuthorize("isAuthenticated() && (hasRole('ADMIN.') || @securityService.hasAccessToUser(#id))")
+    @PreAuthorize("isAuthenticated() && (hasRole('ADMIN') || @securityService.hasAccessToUser(#id))")
     public UserDto getUserById(@PathVariable Long id) {
         return userMapper.toDto(userService.getUserById(id));
     }
@@ -56,6 +56,12 @@ public class UserController { // warstwa do komunikacji z klientem
     @Operation(description = "Allows to delete user specified by ID.", security = @SecurityRequirement(name = "bearer-key"))
     public void deleteUserById(@PathVariable Long id) {
         userService.delete(id);
+    }
+
+    @GetMapping("/activate")
+    @Operation(description = "Allows to activate the user.")
+    public void activateUserByActivationToken(@RequestParam String token) {
+        userService.activateUser(token);
     }
 
 }

@@ -12,4 +12,5 @@ public interface UserService {
     Page<User> getPage(Pageable pageable);
     User getUserById(Long id);
     User getCurrentUser();
+    void activateUser(String activationToken);
 }

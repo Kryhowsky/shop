@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolationException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestControllerAdvice
@@ -39,7 +40,7 @@ public class AdviceController {
 
         return methodArgumentNotValidException.getBindingResult().getAllErrors().stream()
                 .map(fieldErrorMapper::toDto)
-                .toList();
+                .collect(Collectors.toList());
 
     }
 
@@ -51,7 +52,7 @@ public class AdviceController {
 
         return constraintViolationException.getConstraintViolations().stream()
                 .map(constraintViolation -> new FieldErrorDto(constraintViolation.getMessage(), constraintViolation.getPropertyPath().toString()))
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @ResponseStatus(HttpStatus.CONFLICT)

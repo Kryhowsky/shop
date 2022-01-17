@@ -2,6 +2,7 @@ package com.kryhowsky.shop.service.impl;
 
 import com.kryhowsky.shop.model.dto.LoginDto;
 import com.kryhowsky.shop.model.dto.TokenDto;
+import com.kryhowsky.shop.repository.UserRepository;
 import com.kryhowsky.shop.service.LoginService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 public class LoginServiceImpl implements LoginService {
 
     private final AuthenticationManager authenticationManager;
+    private final UserRepository userRepository;
 
     @Override
     public TokenDto authenticateUser(LoginDto loginDto) {

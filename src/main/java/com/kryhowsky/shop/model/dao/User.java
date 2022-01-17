@@ -30,6 +30,7 @@ public class User extends Auditable {
     private String password;
     private String firstName;
     private String lastName;
+    private String activationToken;
 
     @ManyToMany
     @JoinTable(name = "user_role", inverseJoinColumns = @JoinColumn(name = "role_id"))
