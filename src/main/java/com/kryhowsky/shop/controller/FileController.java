@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/files")
+@RequestMapping(value = "/api/files", produces = MediaType.APPLICATION_JSON_VALUE)
 public class FileController {
 
     private final GeneratorFactory generatorFactory;

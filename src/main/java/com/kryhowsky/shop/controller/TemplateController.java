@@ -7,10 +7,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/templates")
+@RequestMapping(value = "/api/templates", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 public class TemplateController {
 
