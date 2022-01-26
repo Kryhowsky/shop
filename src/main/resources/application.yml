@@ -29,4 +29,9 @@ spring:
           protocol: smtp
 file:
   product: C:\Users\Piotr\OneDrive\Pulpit\images
+amazonProperties:
+  endpointUrl: https://s3.eu-central-1.amazonaws.com
+  accessKey: ${SECRET_SHOP_S3_KEY:localkey}
+  secretKey: ${SECRET_SHOP_S3_SECRET:localsecret}
+  bucketName: shop-krh-images
 #    enabled: false

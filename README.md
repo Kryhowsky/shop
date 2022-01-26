@@ -5,19 +5,29 @@ Shop API
 **I create this project under the supervision of my mentor.**
 
 This project imitates API for Shop application.
+You can test the backend of the app here: http://shop-env.eba-bmtuybzm.eu-central-1.elasticbeanstalk.com
+
+Take into account that I am constantly developing this project and adding new functionalities, so some of them may not work at this point.
+ 
+In progress is also the frontend app created in Angular. You can find it on my GitHub.
 
 ## Technologies Used
+- Java
+- Groovy
+- AWS
 - Spring
 - Spring Boot
 - Spring Data JPA
 - Spring MVC
 - Spring Security
 - MySql
+- OpenAPI
 - Lombok
 - Mapstruct
 - Hazelcast
 - Flyway
-
+- Unit Tests
+- Integration Tests
 
 ## Features
 - Add, update, get, delete User

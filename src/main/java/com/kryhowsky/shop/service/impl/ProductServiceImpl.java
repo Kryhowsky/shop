@@ -1,5 +1,7 @@
 package com.kryhowsky.shop.service.impl;
 
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.kryhowsky.shop.config.properties.FilePropertiesConfig;
 import com.kryhowsky.shop.helper.FileHelper;
 import com.kryhowsky.shop.model.dao.Product;
@@ -15,7 +17,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 @Slf4j
 @Service
@@ -25,14 +30,21 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final FilePropertiesConfig filePropertiesConfig;
     private final FileHelper fileHelper;
+    private final AmazonS3 amazonS3;
 
     @SneakyThrows
     @Override
     public Product save(Product product, MultipartFile image) {
         productRepository.save(product);
-        Path path = Paths.get(filePropertiesConfig.getProduct(), "product_" + product.getId() + "." + FilenameUtils.getExtension(image.getOriginalFilename()));
+        Path path = Paths.get(fileHelper.generatePath(image, product));
 //        Files.copy(image.getInputStream(), path);
-        fileHelper.copyInputStream().accept(image.getInputStream(), path);
+//        fileHelper.copyInputStream().accept(image.getInputStream(), path);
+
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.addUserMetadata("Content-Type", image.getContentType());
+        objectMetadata.addUserMetadata("Content-Length", String.valueOf(image.getSize()));
+
+        amazonS3.putObject(filePropertiesConfig.getS3BucketName(), "product_" + product.getId() + "." + FilenameUtils.getExtension(image.getOriginalFilename()), image.getInputStream(), objectMetadata);
         product.setImagePath(path.toString());
         return productRepository.save(product);
     }
