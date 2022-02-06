@@ -1,6 +1,7 @@
 package com.kryhowsky.shop.service.impl;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.kryhowsky.shop.config.properties.FilePropertiesConfig;
 import com.kryhowsky.shop.helper.FileHelper;
@@ -17,10 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.nio.file.Files;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 
 @Slf4j
 @Service
@@ -35,17 +35,10 @@ public class ProductServiceImpl implements ProductService {
     @SneakyThrows
     @Override
     public Product save(Product product, MultipartFile image) {
+
         productRepository.save(product);
-        Path path = Paths.get(fileHelper.generatePath(image, product));
-//        Files.copy(image.getInputStream(), path);
-//        fileHelper.copyInputStream().accept(image.getInputStream(), path);
+        saveImageForProduct(product, image);
 
-        ObjectMetadata objectMetadata = new ObjectMetadata();
-        objectMetadata.addUserMetadata("Content-Type", image.getContentType());
-        objectMetadata.addUserMetadata("Content-Length", String.valueOf(image.getSize()));
-
-        amazonS3.putObject(filePropertiesConfig.getS3BucketName(), "product_" + product.getId() + "." + FilenameUtils.getExtension(image.getOriginalFilename()), image.getInputStream(), objectMetadata);
-        product.setImagePath(path.toString());
         return productRepository.save(product);
     }
 
@@ -62,13 +55,16 @@ public class ProductServiceImpl implements ProductService {
         productDb.setQuantity(product.getQuantity());
 
         if (productDb.getImagePath() != null) {
-            Files.delete(Path.of(productDb.getImagePath()));
+            amazonS3.deleteObject(
+                    new DeleteObjectRequest(
+                            filePropertiesConfig.getS3BucketName(),
+                            FilenameUtils.getName(productDb.getImagePath())
+                    )
+            );
         }
 
         if (image != null) {
-            Path path = Paths.get(filePropertiesConfig.getProduct(), "product_" + productDb.getId() + "." + FilenameUtils.getExtension(image.getOriginalFilename()));
-            Files.copy(image.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-            productDb.setImagePath(path.toString());
+            saveImageForProduct(product, image);
         }
 
         return productDb;
@@ -88,5 +84,22 @@ public class ProductServiceImpl implements ProductService {
     public Product getProductById(Long id) {
         log.info("Product id {} not in cache", id);
         return productRepository.getById(id);
+    }
+
+    private void saveImageForProduct(Product product, MultipartFile image) throws IOException {
+        Path path = Paths.get(fileHelper.generatePath(image, product));
+
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.addUserMetadata("Content-Type", image.getContentType());
+        objectMetadata.addUserMetadata("Content-Length", String.valueOf(image.getSize()));
+
+        amazonS3.putObject(
+                filePropertiesConfig.getS3BucketName(),
+                "product_" + product.getId() + "." + FilenameUtils.getExtension(image.getOriginalFilename()),
+                image.getInputStream(),
+                objectMetadata
+        );
+
+        product.setImagePath(path.toString());
     }
 }

@@ -35,3 +35,13 @@ amazonProperties:
   secretKey: ${SECRET_SHOP_S3_SECRET:localsecret}
   bucketName: shop-krh-images
 #    enabled: false
+environmentProperties:
+  endpointUrl: http://localhost:5000
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+environmentProperties:
+  endpointUrl: http://shop-env.eba-bmtuybzm.eu-central-1.elasticbeanstalk.com
+

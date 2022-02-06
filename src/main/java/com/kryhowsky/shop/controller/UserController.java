@@ -65,4 +65,11 @@ public class UserController { // warstwa do komunikacji z klientem
         userService.activateUser(token);
     }
 
+    @GetMapping("/current")
+    @PreAuthorize("isAuthenticated()")
+    @Operation(description = "Allows to check information about logged user.", security = @SecurityRequirement(name = "bearer-key"))
+    public UserDto getCurrentUser() {
+        return userMapper.toDto(userService.getCurrentUser());
+    }
+
 }

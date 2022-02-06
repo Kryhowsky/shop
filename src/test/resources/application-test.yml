@@ -5,3 +5,5 @@ spring:
     enabled: false
 file:
   product: target
+environmentProperties:
+  endpointUrl: http://localhost:5000

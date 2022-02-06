@@ -7,6 +7,7 @@ import com.kryhowsky.shop.security.SecurityUtils;
 import com.kryhowsky.shop.service.MailService;
 import com.kryhowsky.shop.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,6 +28,9 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
     private final MailService mailService;
+
+    @Value("${environmentProperties.endpointUrl}")
+    private String activationLink;
     
     @Override
     public User save(User user) {
@@ -35,7 +39,7 @@ public class UserServiceImpl implements UserService {
         user.setActivationToken(UUID.randomUUID().toString());
         var result = userRepository.save(user);
         Map<String, Object> variables = new HashMap<>();
-        variables.put("link", "http://shop-env.eba-bmtuybzm.eu-central-1.elasticbeanstalk.com/api/users/activate?token=" + user.getActivationToken());
+        variables.put("link", activationLink + "/api/users/activate?token=" + user.getActivationToken());
         mailService.sendEmail(variables, "greetingsMail", user.getEmail());
         return result;
     }
