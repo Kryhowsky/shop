@@ -23,7 +23,7 @@ public class ProductController {
     private final ProductMapper productMapper;
     private final ProductService productService;
 
-    @PostMapping
+    @PostMapping(consumes=MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(description = "Allows to add new Product.", security = @SecurityRequirement(name = "bearer-key"))
     public ProductDto saveProduct(@RequestPart @Valid ProductDto product, @RequestPart MultipartFile image) {
@@ -42,7 +42,7 @@ public class ProductController {
         return productService.getPage(PageRequest.of(page, size)).map(productMapper::toDto);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(value="/{id}", consumes=MediaType.MULTIPART_FORM_DATA_VALUE)
 //    @PreAuthorize("hasRole('ADMIN')")
     @Operation(description = "Allows to update the Product with specific ID.")
     public ProductDto updateProduct(@RequestPart @Valid ProductDto product, @RequestPart(required = false) MultipartFile image, @PathVariable Long id) {
