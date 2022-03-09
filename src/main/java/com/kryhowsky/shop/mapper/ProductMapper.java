@@ -5,6 +5,8 @@ import com.kryhowsky.shop.model.dto.ProductDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 public interface ProductMapper extends AuditableMapper<Product, ProductDto> {
 
@@ -15,5 +17,7 @@ public interface ProductMapper extends AuditableMapper<Product, ProductDto> {
     @Mapping(target = "lastModifiedBy", ignore = true)
     @Mapping(target = "lastModifiedDate", ignore = true)
     Product toDao(ProductDto productDto);
+
+    List<ProductDto> toDtoList(List<Product> products);
 
 }
