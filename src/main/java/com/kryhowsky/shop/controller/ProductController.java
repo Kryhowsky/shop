@@ -43,7 +43,7 @@ public class ProductController {
     }
 
     @PutMapping(value="/{id}", consumes=MediaType.MULTIPART_FORM_DATA_VALUE)
-//    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(description = "Allows to update the Product with specific ID.")
     public ProductDto updateProduct(@RequestPart @Valid ProductDto product, @RequestPart(required = false) MultipartFile image, @PathVariable Long id) {
         return productMapper.toDto(productService.update(productMapper.toDao(product), image, id));

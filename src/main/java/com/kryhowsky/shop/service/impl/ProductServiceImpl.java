@@ -1,8 +1,10 @@
 package com.kryhowsky.shop.service.impl;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectResult;
 import com.kryhowsky.shop.config.properties.FilePropertiesConfig;
 import com.kryhowsky.shop.helper.FileHelper;
 import com.kryhowsky.shop.model.dao.Product;
@@ -19,8 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 @Slf4j
 @Service
@@ -54,7 +54,7 @@ public class ProductServiceImpl implements ProductService {
         productDb.setPrice(product.getPrice());
         productDb.setQuantity(product.getQuantity());
 
-        if (productDb.getImagePath() != null) {
+        if (productDb.getImagePath() != null && image != null) {
             amazonS3.deleteObject(
                     new DeleteObjectRequest(
                             filePropertiesConfig.getS3BucketName(),
@@ -64,7 +64,7 @@ public class ProductServiceImpl implements ProductService {
         }
 
         if (image != null) {
-            saveImageForProduct(product, image);
+            saveImageForProduct(productDb, image);
         }
 
         return productDb;
@@ -87,19 +87,21 @@ public class ProductServiceImpl implements ProductService {
     }
 
     private void saveImageForProduct(Product product, MultipartFile image) throws IOException {
-        Path path = Paths.get(fileHelper.generatePath(image, product));
 
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.addUserMetadata("Content-Type", image.getContentType());
         objectMetadata.addUserMetadata("Content-Length", String.valueOf(image.getSize()));
 
-        amazonS3.putObject(
+        String fileName = "product_" + product.getId() + "." + FilenameUtils.getExtension(image.getOriginalFilename());
+
+        PutObjectResult putObjectResult = amazonS3.putObject(
                 filePropertiesConfig.getS3BucketName(),
-                "product_" + product.getId() + "." + FilenameUtils.getExtension(image.getOriginalFilename()),
+                fileName,
                 image.getInputStream(),
                 objectMetadata
         );
 
-        product.setImagePath(path.toString());
+        String resourceUrl = ((AmazonS3Client) amazonS3).getResourceUrl(filePropertiesConfig.getS3BucketName(), fileName);
+        product.setImagePath(resourceUrl);
     }
 }

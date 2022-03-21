@@ -7,6 +7,7 @@ import com.kryhowsky.shop.service.BasketService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/basket")
+@RequestMapping(value = "/api/basket", produces = MediaType.APPLICATION_JSON_VALUE)
 public class BasketController {
 
     private final BasketService basketService;
