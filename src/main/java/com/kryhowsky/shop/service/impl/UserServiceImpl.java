@@ -30,7 +30,10 @@ public class UserServiceImpl implements UserService {
     private final MailService mailService;
 
     @Value("${environmentProperties.endpointUrl}")
-    private String activationLink;
+    private String backendLink;
+
+    @Value("${environmentProperties.frontendUrl}")
+    private String frontendUrl;
     
     @Override
     public User save(User user) {
@@ -39,7 +42,7 @@ public class UserServiceImpl implements UserService {
         user.setActivationToken(UUID.randomUUID().toString());
         var result = userRepository.save(user);
         Map<String, Object> variables = new HashMap<>();
-        variables.put("link", activationLink + "/api/users/activate?token=" + user.getActivationToken());
+        variables.put("link", backendLink + "/api/users/activate?token=" + user.getActivationToken());
         mailService.sendEmail(variables, "greetingsMail", user.getEmail());
         return result;
     }
@@ -81,5 +84,23 @@ public class UserServiceImpl implements UserService {
     public void activateUser(String activationToken) {
         var user = userRepository.findByActivationToken(activationToken).orElseThrow(EntityNotFoundException::new);
         user.setActivationToken(null);
+    }
+
+    @Override
+    @Transactional
+    public void generateResetPasswordToken(String email) {
+        var user = userRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
+        user.setResetPasswordToken(UUID.randomUUID().toString());
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("link", frontendUrl + "/auth/new-password?token=" + user.getResetPasswordToken());
+        mailService.sendEmail(variables, "passwordResetMail", user.getEmail());
+    }
+
+    @Override
+    @Transactional
+    public void changePassword(String token, String password) {
+        var user = userRepository.findByResetPasswordToken(token).orElseThrow(EntityNotFoundException::new);
+        user.setPassword(passwordEncoder.encode(password));
+        user.setResetPasswordToken(null);
     }
 }

@@ -13,4 +13,6 @@ public interface UserService {
     User getUserById(Long id);
     User getCurrentUser();
     void activateUser(String activationToken);
+    void generateResetPasswordToken(String email);
+    void changePassword(String token, String password);
 }

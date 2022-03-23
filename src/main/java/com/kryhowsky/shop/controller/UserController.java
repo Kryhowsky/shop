@@ -65,6 +65,18 @@ public class UserController { // warstwa do komunikacji z klientem
         userService.activateUser(token);
     }
 
+    @GetMapping("/password/forgot")
+    @Operation(description = "Generates email to reset the password for the user.")
+    public void generateResetPasswordToken(@RequestParam String email) {
+        userService.generateResetPasswordToken(email);
+    }
+
+    @GetMapping("/password/reset")
+    @Operation(description = "Allows to reset the password for the user.")
+    public void resetPassword(@RequestParam String token, @RequestParam String password) {
+        userService.changePassword(token, password);
+    }
+
     @GetMapping("/current")
     @PreAuthorize("isAuthenticated()")
     @Operation(description = "Allows to check information about logged user.", security = @SecurityRequirement(name = "bearer-key"))
