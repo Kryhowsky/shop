@@ -5,7 +5,6 @@ Shop API
 **I create this project under the supervision of my mentor.**
 
 This project imitates API for Shop application.
-You can test the backend of the app here: http://shop-env.eba-bmtuybzm.eu-central-1.elasticbeanstalk.com
 
 Take into account that I am constantly developing this project and adding new functionalities, so some of them may not work at this point.
  
